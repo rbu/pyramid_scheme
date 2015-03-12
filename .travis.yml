@@ -8,5 +8,7 @@ python:
   - "3.4"
   - "pypy"
 install:
-  - pip install .[testing]
+  # I'd like to do this without "-e", but then pip barfs:
+  # https://github.com/pypa/pip/issues/1236
+  - pip install -e .[testing]
 script: nosetests

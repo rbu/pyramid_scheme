@@ -3,6 +3,10 @@
 
 from setuptools import setup
 
+tests_require=[
+    'pyexpect',
+],
+
 setup(
     name='pyramid_scheme',
     version='1.0.0',
@@ -17,7 +21,8 @@ setup(
         'requests',
         'future',
     ],
-    tests_require=[
-        'pyexpect',
-    ]
+    tests_require=tests_require,
+    extras_require = dict(
+        testing=tests_require,
+    ),
 )

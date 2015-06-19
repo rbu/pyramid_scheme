@@ -61,5 +61,11 @@ class MakeRequestTest(unittest.TestCase):
         foo = dict(request.POST)['foo']
         expect(foo.file.read()) == b'foobar'
 
+    def test_can_produce_streamable_request_body(self):
+        fake_file = BytesIO(b'foobar')
+        request = make_request(method='post', POST=fake_file)
+        body = request.body_file_seekable
+        expect(body.read()) == 'foobar'
+
     def test_can_create_session(self):
         expect(make_request(method='post').session).isinstance(DummySession)

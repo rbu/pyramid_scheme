@@ -67,7 +67,7 @@ def make_request(
         'HTTP_COOKIE': ensure_native_string_type(request.headers.get('Cookie', '')),
         
         # Relevant WSGI parameters
-        'wsgi.input': BytesIO(ensure_bytes(request.body)),
+        'wsgi.input': ensure_file_like(request.body),
     })
     
     pyramid_request = PyramidRequest(wsgi_env, charset='utf-8')
@@ -77,10 +77,14 @@ def make_request(
     pyramid_request.body
     return pyramid_request
 
-def ensure_bytes(str_or_bytes):
+def ensure_file_like(str_or_bytes):
+    if hasattr(str_or_bytes, 'read'):
+        return str_or_bytes
+    
     if isinstance(str_or_bytes, text_type):
-        return str_or_bytes.encode('utf-8')
-    return str_or_bytes
+        return BytesIO(str_or_bytes.encode('utf-8'))
+    
+    return BytesIO(str_or_bytes)
 
 def ensure_native_string_type(text_or_bytes):
     import sys
